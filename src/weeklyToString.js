@@ -4,7 +4,7 @@
 "use strict";
 
 const moment = require('moment');
-const {contentFormat} = require('./config');
+const {contentFormat} = require('../config');
 
 const TITLE_PREFIX = contentFormat.titlePrefix || '# ';
 const NAME_OF_DAY_OF_WEEK = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];

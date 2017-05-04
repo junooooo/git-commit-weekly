@@ -5,11 +5,11 @@
 
 const gitlog = require('gitlog');
 const moment = require('moment');
-const config = require('./config');
+const path = require('path');
+const config = require('../config');
 const startOfWeek = moment().startOf('week').add(1, 'd').toDate();
 const util = require('./util');
 const weeklyToString = require('./weeklyToString');
-
 
 const task = config.repos.map(function (repo) {
     return weeklyForOneRepo(repo.path);
@@ -18,7 +18,7 @@ const task = config.repos.map(function (repo) {
 Promise.all(task)
     .then(function (weekly) {
         const log = weeklyToString(startOfWeek, config.repos, weekly);
-        return util.writerFile('./output/' + log.title + '.md', log.str);
+        return util.writerFile(formatOutputPath(log.title), log.str);
     })
     .then( () => console.log('周报已生成，请前往 output 文件夹查看'))
     .catch( err => {
@@ -68,4 +68,8 @@ function getLogs(repo, author, startDay) {
             return resolve(commits);
         });
     })
+}
+
+function formatOutputPath(title){
+    return path.join(__dirname, '../output', title + '.md');
 }
