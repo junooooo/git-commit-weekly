@@ -1,4 +1,6 @@
 output/*
+.idea/
 
 # dependencies
 node_modules
+config.js
