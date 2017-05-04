@@ -51,6 +51,7 @@
   - weekNamePrefix: 周的前缀，默认是三级标题 `### `
   - repoNamePrefix: 项目名称的前缀，默认是一级列表  `- `
   - itemPrefix:  每项 commit message 的前缀，默认是二级列表， `四个空格加- `
+- `numOfDaysInWeek`: 选填，代表一周是几天。如，是 5 的话，就是从周一到周五。7 就是从周一到周日。默认为 5
 
 
 

@@ -4,18 +4,18 @@
 "use strict";
 
 const moment = require('moment');
-const {contentFormat} = require('../config');
+const {contentFormat, numOfDaysInWeek} = require('../config');
 
-const TITLE_PREFIX = contentFormat.titlePrefix || '# ';
+const TITLE_PREFIX = (contentFormat.titlePrefix || '#') + ' ';
 const NAME_OF_DAY_OF_WEEK = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-const WEEK_NAME_PREFIX = contentFormat.weekNamePrefix || '### ';
-const REPO_NAME_PREFIX = contentFormat.repoNamePrefix || '- ';
-const ITEM_PREFIX = contentFormat.itemPrefix || '    - ';
+const WEEK_NAME_PREFIX = (contentFormat.weekNamePrefix || '###') + ' ';
+const REPO_NAME_PREFIX = (contentFormat.repoNamePrefix || '-') + ' ';
+const ITEM_PREFIX = (contentFormat.itemPrefix || '    -') + ' ';
 
 module.exports = function weeklyToString(startOfWeek, repos, weekly) {
     const title = weeklyTitle(startOfWeek);
     let str = TITLE_PREFIX + title + '\n';
-    const numOfDays = 7;
+    const numOfDays = numOfDaysInWeek || 5;
 
     for (let i = 0; i < numOfDays ; i++) {
         str += (WEEK_NAME_PREFIX + NAME_OF_DAY_OF_WEEK[i] + '\n');
