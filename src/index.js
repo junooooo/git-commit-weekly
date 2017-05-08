@@ -7,9 +7,14 @@ const gitlog = require('gitlog');
 const moment = require('moment');
 const path = require('path');
 const config = require('../config');
-const startOfWeek = moment().startOf('week').add(1, 'd').toDate();
 const util = require('./util');
 const weeklyToString = require('./weeklyToString');
+
+let weekOffset = process.env.npm_config_prev;
+
+let startOfWeek = moment().startOf('week').add(1, 'd');
+if (weekOffset > 0) startOfWeek.subtract(weekOffset, 'weeks');
+startOfWeek = startOfWeek.toDate();
 
 const task = config.repos.map(function (repo) {
     return weeklyForOneRepo(repo.path);
