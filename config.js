@@ -6,7 +6,7 @@
 module.exports = {
     repos: [
         {
-            name: '项目名称，如，开智学堂管理后台',
+            name: '自定义项目名称',
             path: '/absolute/path/to/repo'
         }
     ],

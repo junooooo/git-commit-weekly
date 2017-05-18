@@ -2,46 +2,81 @@
 
 这是一个根据配置的 git 仓库，将当周提交的 git message 整理成周报的脚本。
 
+## 安装
+
+```bash
+npm install -g git-weekly
+```
+
 ## 如何使用
 
-### 配置项目`config.js`
+### 初始化
 
-- `repo` ：自己参与的项目列表
+```bash
+mkdir test-weekly && cd test-weekly
+git-weekly init
+```
+
+- 会在当前目录下，创建配置文件 `weekly.config.json`
+
+### 配置 git 仓库
+
+打开生成的 `weekly.config.json` 文件，将配置需要生成报告的 git 仓库
+
+- `repo` ：仓库列表
 
   - `path`：项目仓库的绝对路径
   - `name`：周报中显示的项目名称，根据自己的习惯任取
 
-- `author`：git 用户名，可以通过`git config --get user.name `获取
+- `author`：git 用户名，一般会根据 `git config --get user.name ` 自动生成
 
 - `contentFormat`：选填，用于配置生成的 markdown 格式
 
-  - titlePrefix: 标题的前缀，默认是一级标题 `# `
-  - weekNamePrefix: 周的前缀，默认是三级标题 `### `
-  - repoNamePrefix: 项目名称的前缀，默认是一级列表  `- `
-  - itemPrefix:  每项 commit message 的前缀，默认是二级列表， `四个空格加- `
+  - titlePrefix: 标题的前缀，默认是一级标题 `#`
+  - weekNamePrefix: 周的前缀，默认是三级标题 `###`
+  - repoNamePrefix: 项目名称的前缀，默认是一级列表  `-`
+  - itemPrefix:  每项 commit message 的前缀，默认是二级列表， `四个空格加-`
 - `numOfDaysInWeek`: 选填，代表一周是几天。如，是 5 的话，就是从周一到周五。7 就是从周一到周日。默认为 5
-
-
 
 ### 生成周报
 
-配置完成以后，`npm start`即可。周报在 `output`文件夹中查看。
+```
+git-weekly
+```
+
+生成的周报存放于 `./output` 下。
 
 ### 生成前 n 周的周报
 
 - 生成上一周的周报：
 
-`npm --prev=1 start`
+```
+git-weekly -p 1
+```
 
-同理，生成上上周的周报为 
+## 其他选项
 
-`npm --prev=2 start`
+```
+Usage: git-weekly [options] [command]
 
 
+  Commands:
 
-## 示例
+    init   初始化配置
 
-在项目根目录下，运行`npm start`，即可生成如下格式的周报：
+  Options:
+
+    -h, --help                  output usage information
+    -V, --version               output the version number
+    -c, --config [config-file]  指定配置文件
+    -o, --output [output-dir]   指定报告存放的路径
+    -p, --prev <numberOfWeek>   指定生成 n 周前的报告
+
+```
+
+
+## 报告示例
+
 
 ```markdown
 # 20170424-20170430
@@ -67,6 +102,4 @@
     - fix: 添加了对 sendcloud 返回结果的验证
     - add sendcloud get email templates api
 ### 周五
-### 周六
-### 周日
 ```
