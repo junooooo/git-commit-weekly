@@ -81,25 +81,25 @@ Usage: git-weekly [options] [command]
 ```markdown
 # 20170424-20170430
 ### 周一
-- 开智学堂服务端
+- 某项目服务端
     - add repo name check regular express
 ### 周二
-- 开智学堂服务端
-    - 完成回调体对有赞的 request body 的解析，提取相应信息
+- 某项目服务端
+    - 完成回调体对 request body 的解析，提取相应信息
     - 完成用户自主购买课程的基本逻辑
 ### 周三
-- 开智学堂管理后台
+- 某项目管理后台
     - feat: 添加了课程销售配置 tab
-- 开智学堂服务端
+- 某项目服务端
     - fix bug: tag_controller 验证 card 是否存在
-    - 将有赞商品的 alias 和链接一并存在数据库
+    - 将商品的 alias 和链接一并存在数据库
 ### 周四
-- 开智学堂管理后台
+- 某项目管理后台
     - get email templates from server
     - merge
     - feat: 系统配置添加了开课默认配置项
-- 开智学堂服务端
-    - fix: 添加了对 sendcloud 返回结果的验证
-    - add sendcloud get email templates api
+- 某项目服务端
+    - fix: 添加了对返回结果的验证
+    - add get email templates api
 ### 周五
 ```
