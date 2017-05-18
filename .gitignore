@@ -3,4 +3,3 @@ output/*
 
 # dependencies
 node_modules
-config.js

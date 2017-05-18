@@ -4,78 +4,70 @@
  */
 "use strict";
 
-const gitlog = require('gitlog');
+const fs = require('fs');
+const program = require('commander');
 const moment = require('moment');
 const path = require('path');
-const config = require('../config');
-const util = require('./util');
-const weeklyToString = require('./weeklyToString');
+const generate = require('./generate');
+const PKG = require('../package.json');
+const init = require('./init');
 
-let weekOffset = process.env.npm_config_prev;
+program
+    .version(PKG.version);
 
-let startOfWeek = moment().startOf('week').add(1, 'd');
-if (weekOffset > 0) startOfWeek.subtract(weekOffset, 'weeks');
-startOfWeek = startOfWeek.toDate();
+program
+    .option('-c, --config [config-file]', '指定配置文件')
+    .option('-o, --output [output-dir]', '指定报告存放的路径')
+    .option('-p, --prev <numberOfWeek>', '指定生成 n 周前的报告');
 
-const task = config.repos.map(function (repo) {
-    return weeklyForOneRepo(repo.path);
-});
+program.command('init')
+    .description('初始化配置')
+    .action(init);
 
-Promise.all(task)
-    .then(function (weekly) {
-        const log = weeklyToString(startOfWeek, config.repos, weekly);
-        return util.writerFile(formatOutputPath(log.title), log.str);
-    })
-    .then( () => console.log('周报已生成，请前往 output 文件夹查看'))
-    .catch( err => {
-        console.log('出错啦', err);
-    });
+program.parse(process.argv);
 
-function weeklyForOneRepo(repo) {
-    const _weekly = new Array(7);
-    return getLogs(repo, config.author, startOfWeek)
-        .then(logs => {
-            logs.forEach(log => {
-                if (util.isMergeMessage(log.subject)) return;
 
-                const _date = new Date(log.authorDate.replace('@end@', ''));
-                const dayOfWeek = util.calDiffInDays(_date, startOfWeek);
-                _weekly[dayOfWeek] = _weekly[dayOfWeek] || [];
-                _weekly[dayOfWeek].push(log.subject);
-            });
-            return _weekly;
-        });
+if (program.rawArgs[2] === 'init')
+    return;
+
+const config = getConfig();
+const startOfWeek = getStartOfWeek();
+const outputDir = getOutputDir();
+
+generate(config, startOfWeek, outputDir);
+
+function getStartOfWeek() {
+    let weekOffset = program.prev || 0;
+    weekOffset = parseInt(weekOffset, 10);
+
+    let startOfWeek = moment().startOf('week').add(1, 'd');
+    if (weekOffset > 0) startOfWeek.subtract(weekOffset, 'weeks');
+    return startOfWeek.toDate();
 }
 
-
-function getLogs(repo, author, startDay) {
-    const options =
-        {
-            repo: repo,
-            number: 1000,
-            author: author,
-            fields: [
-                'hash',
-                'abbrevHash',
-                'subject',
-                'authorName',
-                'authorDateRel',
-                'authorDate'
-            ],
-            after: startDay,
-            all: true
-        };
-
-    return new Promise((resolve, reject) => {
-        gitlog(options, function (error, commits) {
-            if (error) {
-                return reject(error);
-            }
-            return resolve(commits);
-        });
-    })
+function getConfig(){
+    let configPath;
+    if (program.config) {
+        return require(program.config);
+    }
+    else if (configPath = getLocalConfig()){
+        return require(configPath);
+    } else {
+        throw new Error('本地和输入参数中都没发现配置文件');
+    }
 }
 
-function formatOutputPath(title){
-    return path.join(__dirname, '../output', title + '.md');
+function getLocalConfig() {
+    const localConfigPath = path.resolve(process.cwd(), 'weekly.config.json');
+    return fs.existsSync(localConfigPath) && localConfigPath;
+}
+
+function getOutputDir() {
+    if (program.output && fs.lstatSync(program.output).isDirectory()) {
+        return program.output;
+    }
+
+    const localOutput = path.resolve(process.cwd(), 'output');
+    if (!fs.existsSync(localOutput)) fs.mkdirSync(localOutput);
+    return localOutput;
 }
