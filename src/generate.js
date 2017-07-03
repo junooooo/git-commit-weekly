@@ -13,7 +13,7 @@ module.exports = function generateLogs(config, startOfWeek, outputDir) {
 
     Promise.all(task)
         .then(function (weekly) {
-            const log = weeklyToString(startOfWeek, config.repos, weekly);
+            const log = weeklyToString(startOfWeek, config, weekly);
             return util.writerFile(formatOutputPath(outputDir, log.title), log.str);
         })
         .then( () => console.log('周报已生成，请前往 %s 文件夹查看', outputDir))
